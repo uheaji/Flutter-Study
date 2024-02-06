@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var a = 1;
+  var name = ["신짱구", "신짱아", "봉미선"];
+  var favorite = [0, 0, 0];
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Text(a.toString()),
+          onPressed: () {
+            setState(() {
+              a++;
+            });
+          },
+        ),
         appBar: AppBar(
           title: Text(
             '연락처',
@@ -28,35 +44,24 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.blue,
         ),
         bottomNavigationBar: BottomNav(),
-        body: ListView(
-          children: [
-            UserItem(),
-            UserItem(),
-            UserItem(),
-            UserItem(),
-            UserItem(),
-            UserItem(),
-          ],
+        body: ListView.builder(
+          itemCount: 3,
+          itemBuilder: (context, index) {
+            print(index);
+            return ListTile(
+              leading: Text(favorite[index].toString()),
+              title: Text(name[index]),
+              trailing: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    favorite[index]++;
+                  });
+                },
+                child: Text("좋아요"),
+              ),
+            );
+          },
         ),
-      ),
-    );
-  }
-}
-
-class UserItem extends StatelessWidget {
-  const UserItem({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
-        children: [
-          Icon(
-            Icons.person_pin,
-            size: 50,
-          ),
-          Text("홍길동"),
-        ],
       ),
     );
   }
