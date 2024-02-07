@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MaterialApp(
+      home: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -11,58 +15,72 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var a = 1;
   var name = ["신짱구", "신짱아", "봉미선"];
-  var favorite = [0, 0, 0];
+
+  // context는 부모위젯의 정보를 담고있는 변수다.
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Text('버튼'),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return DialogUI();
+            },
+          );
+        },
+      ),
+      appBar: AppBar(
+        title: Text(
+          '연락처',
+          style: TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blue,
+      ),
+      body: ListView.builder(
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Icon(Icons.person_pin),
+            title: Text(name[index]),
+          );
+        },
+      ),
+      bottomNavigationBar: BottomNav(),
+    );
+  }
+}
+
+class DialogUI extends StatelessWidget {
+  const DialogUI({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Text(a.toString()),
-          onPressed: () {
-            setState(() {
-              a++;
-            });
-          },
-        ),
-        appBar: AppBar(
-          title: Text(
-            '연락처',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-          // shape: Border(
-          //   bottom: BorderSide(
-          //     color: Colors.black12,
-          //   ),
-          // ),
-          backgroundColor: Colors.blue,
-        ),
-        bottomNavigationBar: BottomNav(),
-        body: ListView.builder(
-          itemCount: 3,
-          itemBuilder: (context, index) {
-            print(index);
-            return ListTile(
-              leading: Text(favorite[index].toString()),
-              title: Text(name[index]),
-              trailing: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    favorite[index]++;
-                  });
-                },
-                child: Text("좋아요"),
-              ),
-            );
-          },
+    return AlertDialog(
+      title: Text("Contact"),
+      content: Container(
+        child: TextField(
+          decoration: InputDecoration(labelText: "phone number"),
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text("취소"),
+        ),
+        TextButton(
+          onPressed: () {},
+          child: Text("확인"),
+        ),
+      ],
     );
   }
 }
