@@ -15,26 +15,36 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var total = 3;
   var name = ["신짱구", "신짱아", "봉미선"];
+
+  // 1. 부모에 수정함수 만들기
+  addOne(addName) {
+    setState(() {
+      total++;
+      name.add(addName);
+    });
+  }
 
   // context는 부모위젯의 정보를 담고있는 변수다.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Text('버튼'),
+        child: Text("추가"),
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
-              return DialogUI();
+              // 2. 자식위젯에 함수 보내기
+              return DialogUI(addOne: addOne);
             },
           );
         },
       ),
       appBar: AppBar(
         title: Text(
-          '연락처',
+          '연락처 (${total.toString()})',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w600,
@@ -44,7 +54,7 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: Colors.blue,
       ),
       body: ListView.builder(
-        itemCount: 3,
+        itemCount: total,
         itemBuilder: (context, index) {
           return ListTile(
             leading: Icon(Icons.person_pin),
@@ -58,7 +68,10 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DialogUI extends StatelessWidget {
-  const DialogUI({super.key});
+  // 3. 등록하기
+  DialogUI({super.key, this.addOne});
+  final addOne;
+  var inputData = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +79,8 @@ class DialogUI extends StatelessWidget {
       title: Text("Contact"),
       content: Container(
         child: TextField(
-          decoration: InputDecoration(labelText: "phone number"),
+          controller: inputData,
+          decoration: InputDecoration(labelText: "Name"),
         ),
       ),
       actions: [
@@ -77,8 +91,11 @@ class DialogUI extends StatelessWidget {
           child: Text("취소"),
         ),
         TextButton(
-          onPressed: () {},
-          child: Text("확인"),
+          onPressed: () {
+            addOne(inputData.text);
+            Navigator.pop(context);
+          },
+          child: Text("완료"),
         ),
       ],
     );
